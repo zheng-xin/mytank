@@ -1,0 +1,10 @@
+initTankCount=10
+tankSpeed=5
+bulletSpeed=20
+gameWidth=1080
+gameHigh=720
+#fireStrategt
+goodFS=com.zhengxin.tank.strategy.ForeDirFireStrategy
+badFS=com.zhengxin.tank.strategy.DefaultFireStrategy
+#colliders
+colliders=com.zhengxin.tank.chainofresponsibility.BulletAndTankCollide,com.zhengxin.tank.chainofresponsibility.TankAndTankCollide,com.zhengxin.tank.chainofresponsibility.TankAndWallCollede,com.zhengxin.tank.chainofresponsibility.BulletAndWallCollide
