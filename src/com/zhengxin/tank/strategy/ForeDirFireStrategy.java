@@ -5,6 +5,7 @@ import com.zhengxin.tank.Dir;
 import com.zhengxin.tank.GameModel;
 import com.zhengxin.tank.Tank;
 import com.zhengxin.tank.decorator.RectDecorator;
+import com.zhengxin.tank.decorator.TailDecorator;
 
 /**
  * @Auther: zhengxin
@@ -19,7 +20,8 @@ public class ForeDirFireStrategy implements FireStrategy {
         int by = t.getY() + Tank.HIGH / 2 - Bullet.HIGH / 2;
         Dir[] values = Dir.values();
         for (int i = 0;i<values.length;i++) {
-            GameModel.GetInstance().getObjects().add(new RectDecorator(new Bullet(bx, by, values[i], t.getGroup())));
+//           装饰模式 GameModel.GetInstance().getObjects().add(new TailDecorator(new RectDecorator(new Bullet(bx, by, values[i], t.getGroup()))));
+            GameModel.GetInstance().getObjects().add(new Bullet(bx, by, values[i], t.getGroup()));
         }
     }
     private static volatile ForeDirFireStrategy foreDirFireStrategy ;
