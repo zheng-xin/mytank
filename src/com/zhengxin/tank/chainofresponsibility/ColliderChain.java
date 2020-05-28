@@ -14,7 +14,7 @@ import java.util.List;
  * @Description: com.zhengxin.tank.chainofresponsibility
  * @version: 1.0
  */
-public class ColliderChain {
+public class ColliderChain implements Collider{
     private List<Collider> collides = new LinkedList<Collider>();
     public ColliderChain(){
         String[] collidesStars = PropertyMgr.getInstance().getStringProp(PropetryKeys.COLLIDERS).split(",");
