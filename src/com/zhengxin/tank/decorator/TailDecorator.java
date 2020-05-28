@@ -6,12 +6,12 @@ import java.awt.*;
 
 /**
  * @Auther: zhengxin
- * @Date: 2020/5/26 - 05 - 26 - 21:02
+ * @Date: 2020/5/27 - 05 - 27 - 7:55
  * @Description: com.zhengxin.tank.decorator
  * @version: 1.0
  */
-public class RectDecorator extends GoDecorator{
-    public RectDecorator(GameObject go) {
+public class TailDecorator extends GoDecorator{
+    public TailDecorator(GameObject go) {
         super(go);
     }
     @Override
@@ -20,9 +20,8 @@ public class RectDecorator extends GoDecorator{
         this.y = go.getY();
         super.paint(g);
         Color c = g.getColor();
-        g.setColor(Color.yellow);
-        g.drawRect(go.getX(),go.getY(),go.getWith(),go.getHigh());
+        g.setColor(Color.BLUE);
+        g.drawLine(go.getX(),go.getY(),getWith(),getHigh());
         g.setColor(c);
     }
-
 }
