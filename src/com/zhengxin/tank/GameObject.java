@@ -11,10 +11,10 @@ import java.awt.*;
  * @version: 1.0
  */
 public abstract class GameObject {
-     int x;
-     int y;
-     int with;
-     int high;
+     protected int x;
+     protected int y;
+     protected int with;
+     protected int high;
      Group group = Group.BAD;
      boolean living = true;
      final Rectangle rect = new Rectangle();
