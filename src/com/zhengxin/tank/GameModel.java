@@ -4,6 +4,8 @@ import com.zhengxin.tank.chainofresponsibility.BulletAndTankCollide;
 import com.zhengxin.tank.chainofresponsibility.Collider;
 import com.zhengxin.tank.chainofresponsibility.ColliderChain;
 import com.zhengxin.tank.chainofresponsibility.TankAndTankCollide;
+import com.zhengxin.tank.obsever.FireObsever;
+import com.zhengxin.tank.obsever.IFireListener;
 import sun.security.jca.GetInstance;
 
 import java.awt.*;
@@ -36,10 +38,13 @@ public class GameModel {
         return gameModel;
     }
     private void  init (){
+        IFireListener listener = new FireObsever();
+        this.mainTank.addFireEvent(listener);
         //初始换敌方坦克
         Tank tk = null;
         for (int i = 0; i < tankCount; i++) {
             tk = new Tank(i * 80 + 200, 200, Dir.DOWN, this, true, Group.BAD);
+            tk.addFireEvent(listener);
             this.objects.add(tk);
         }
         Wall wall = new Wall(200,600,50,50);

@@ -1,9 +1,14 @@
 package com.zhengxin.tank;
 
+import com.zhengxin.tank.obsever.FireEvent;
+import com.zhengxin.tank.obsever.IFireListener;
 import com.zhengxin.tank.strategy.FireStrategy;
-import org.hamcrest.core.Is;
 
+import javax.swing.event.TreeWillExpandListener;
 import java.awt.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -23,6 +28,8 @@ public class Tank extends GameObject{
     private Random random = new Random();
     private FireStrategy fireStrategy;//开火策略
     int prevX,prevY;
+    //模拟观察者模式
+    private List<IFireListener> fireListeners = new LinkedList<IFireListener>();
 
 
     public Tank(int x, int y, Dir dir, GameModel gm, boolean isMoving, Group group) {
@@ -85,7 +92,18 @@ public class Tank extends GameObject{
     }
 
     public void fire() {
-        fireStrategy.fire(this);
+
+        //fireStrategy.fire(this);
+        Iterator<IFireListener> it = this.fireListeners.iterator();
+        FireEvent event = new FireEvent(this);
+        while (it.hasNext()) {
+            IFireListener fireListener = it.next();
+            fireListener.Fire(event);
+        }
+        //模拟观察者模式  实际没必要这么写
+    }
+    public void fire2(){
+        this.fireStrategy.fire(this);
     }
 
     public Group getGroup() {
@@ -134,6 +152,9 @@ public class Tank extends GameObject{
     public void returnLastPosion(){
         this.x = prevX;
         this.y = prevY;
+    }
+    public void addFireEvent(IFireListener listener){
+        this.fireListeners.add(listener);
     }
 
 }
