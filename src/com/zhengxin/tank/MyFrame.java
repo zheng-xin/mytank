@@ -74,6 +74,13 @@ public class MyFrame extends Frame {
                     break;
                 case KeyEvent.VK_DOWN:
                     bd = true;
+                    break;
+                case KeyEvent.VK_S:
+                    GameModel.GetInstance().save();
+                    break;
+                case  KeyEvent.VK_L:
+                    GameModel.GetInstance().load();
+                    break;
                 default:
                     break;
             }

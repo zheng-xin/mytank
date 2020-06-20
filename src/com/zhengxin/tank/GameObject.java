@@ -3,6 +3,7 @@ package com.zhengxin.tank;
 import com.sun.org.apache.regexp.internal.RE;
 
 import java.awt.*;
+import java.io.Serializable;
 
 /**
  * @Auther: zhengxin
@@ -10,7 +11,7 @@ import java.awt.*;
  * @Description: com.zhengxin.tank
  * @version: 1.0
  */
-public abstract class GameObject {
+public abstract class GameObject implements Serializable {
      protected int x;
      protected int y;
      protected int with;

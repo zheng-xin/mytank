@@ -9,6 +9,7 @@ import com.zhengxin.tank.obsever.IFireListener;
 import sun.security.jca.GetInstance;
 
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +70,43 @@ public class GameModel {
                 GameObject o1 = this.objects.get(i);
                 GameObject o2 = this.objects.get(j);
                 colliderChain.collide(o1,o2);
+            }
+        }
+    }
+    public void save()  {
+        File file = new File("T:/tank.data");
+        ObjectOutputStream objectOutputStream = null;
+        try {
+            objectOutputStream = new ObjectOutputStream(new FileOutputStream(file));
+            objectOutputStream.writeObject(mainTank);
+            objectOutputStream.writeObject(objects);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                objectOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+    public void load(){
+        File file = new File("T:/tank.data");
+        ObjectInputStream inputStream =null;
+        try {
+            inputStream = new ObjectInputStream(new FileInputStream(file));
+            mainTank = (Tank) inputStream.readObject();
+            objects = (List<GameObject>) inputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

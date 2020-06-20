@@ -7,13 +7,15 @@ import com.zhengxin.tank.Tank;
 import com.zhengxin.tank.decorator.RectDecorator;
 import com.zhengxin.tank.decorator.TailDecorator;
 
+import java.io.Serializable;
+
 /**
  * @Auther: zhengxin
  * @Date: 2020/5/25 - 05 - 25 - 9:20
  * @Description: com.zhengxin.tank
  * @version: 1.0
  */
-public class ForeDirFireStrategy implements FireStrategy {
+public class ForeDirFireStrategy implements FireStrategy, Serializable {
     @Override
     public void fire(Tank t) {
         int bx = t.getX() + Tank.WITH/ 2 - Bullet.WITH / 2;

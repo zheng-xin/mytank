@@ -4,13 +4,15 @@ import com.zhengxin.tank.Bullet;
 import com.zhengxin.tank.GameModel;
 import com.zhengxin.tank.Tank;
 
+import java.io.Serializable;
+
 /**
  * @Auther: zhengxin
  * @Date: 2020/5/25 - 05 - 25 - 8:54
  * @Description: com.zhengxin.tank
  * @version: 1.0
  */
-public class DefaultFireStrategy implements FireStrategy {
+public class DefaultFireStrategy implements FireStrategy, Serializable {
     @Override
     public void fire(Tank t) {
         int bx = t.getX() + Tank.WITH / 2 - Bullet.WITH / 2;
