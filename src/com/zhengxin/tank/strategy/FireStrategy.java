@@ -1,5 +1,6 @@
 package com.zhengxin.tank.strategy;
 
+import com.zhengxin.tank.Bullet;
 import com.zhengxin.tank.Tank;
 
 /**
@@ -9,5 +10,5 @@ import com.zhengxin.tank.Tank;
  * @version: 1.0
  */
 public interface FireStrategy {
-    void fire(Tank t);
+    Bullet[] fire(Tank t);
 }

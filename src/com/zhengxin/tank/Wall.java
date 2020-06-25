@@ -3,6 +3,7 @@ package com.zhengxin.tank;
 import com.zhengxin.tank.chainofresponsibility.Collider;
 
 import java.awt.*;
+import java.util.UUID;
 
 /**
  * @Auther: zhengxin
@@ -20,6 +21,7 @@ public class Wall extends GameObject{
         this.rect.y = y;
         this.rect.width = w;
         this.rect.height = h;
+        this.id = UUID.randomUUID();
     }
     @Override
     public void paint(Graphics g) {

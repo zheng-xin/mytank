@@ -3,6 +3,7 @@ package com.zhengxin.tank;
 import com.sun.org.apache.regexp.internal.RE;
 
 import java.awt.*;
+import java.util.UUID;
 
 /**
  * @Auther: zhengxin
@@ -17,6 +18,7 @@ public abstract class GameObject {
      protected int high;
      Group group = Group.BAD;
      boolean living = true;
+    protected UUID id;
      final Rectangle rect = new Rectangle();
     public int getX(){
         return x;
@@ -40,5 +42,12 @@ public abstract class GameObject {
     }
     public void die() {
         this.living = false;
+    }
+    public UUID getId(){
+        return this.id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 }

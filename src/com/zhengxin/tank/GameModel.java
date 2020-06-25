@@ -1,16 +1,14 @@
 package com.zhengxin.tank;
 
-import com.zhengxin.tank.chainofresponsibility.BulletAndTankCollide;
-import com.zhengxin.tank.chainofresponsibility.Collider;
 import com.zhengxin.tank.chainofresponsibility.ColliderChain;
-import com.zhengxin.tank.chainofresponsibility.TankAndTankCollide;
-import com.zhengxin.tank.obsever.FireObsever;
 import com.zhengxin.tank.obsever.IFireListener;
-import sun.security.jca.GetInstance;
+import com.zhengxin.tank.obsever.SendMsgObsever;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 /**
  * @Auther: zhengxin
@@ -20,8 +18,9 @@ import java.util.List;
  */
 public class GameModel {
 
-    private Tank mainTank = new Tank(300, 400, Dir.UP, this, false, Group.GOOD);
-    private List<GameObject> objects = new ArrayList<GameObject>();
+
+    private Map<UUID,GameObject> objects = new HashMap<UUID, GameObject>();
+    private UUID maintankId;
     private final int tankCount = PropertyMgr.getInstance().getIntProp(PropetryKeys.INITTANKCOUNT);
     ColliderChain colliderChain = new ColliderChain();
     private static volatile GameModel gameModel = null;
@@ -38,38 +37,42 @@ public class GameModel {
         return gameModel;
     }
     private void  init (){
-        IFireListener listener = new FireObsever();
-        this.mainTank.addFireEvent(listener);
+        IFireListener listener = new SendMsgObsever();
+        Random random = new Random();
+        this.maintankId = UUID.randomUUID();
+        Tank mainTank = new Tank(random.nextInt(300), random.nextInt(400), Dir.UP, false, Group.values()[random.nextInt(2)],maintankId);
+        mainTank.addFireEvent(listener);
+        this.objects.put(this.maintankId, mainTank);
         //初始换敌方坦克
-        Tank tk = null;
-        for (int i = 0; i < tankCount; i++) {
-            tk = new Tank(i * 80 + 200, 200, Dir.DOWN, this, true, Group.BAD);
-            tk.addFireEvent(listener);
-            this.objects.add(tk);
-        }
+//        Tank tk = null;
+//        for (int i = 0; i < tankCount; i++) {
+//            tk = new Tank(i * 80 + 200, 200, Dir.DOWN, this, true, Group.BAD);
+//            tk.addFireEvent(listener);
+//            this.objects.add(tk);
+//        }
         Wall wall = new Wall(200,600,50,50);
-        this.objects.add(wall);
+        this.objects.put(wall.id,wall);
     }
     public Tank getMainTank(){
-        return mainTank;
+        return (Tank) this.objects.get(this.maintankId);
     }
 
-    public List<GameObject> getObjects(){
+    public Map<UUID,GameObject> getObjects(){
         return this.objects;
     }
     public void paint(Graphics g) {
-
-        this.getMainTank().paint(g);
-
-        for (int i = 0; i < this.objects.size(); i++) {
-            this.objects.get(i).paint(g);
+        UUID[] keys = this.objects.keySet().toArray(new UUID[]{});
+        for (int i = 0; i < keys.length; i++) {
+            this.objects.get(keys[i]).paint(g);
         }
-        for (int i = 0; i < this.objects.size();i++) {
-            for (int j = i+1;j<this.objects.size();j++) {
-                GameObject o1 = this.objects.get(i);
-                GameObject o2 = this.objects.get(j);
+
+        for (int i = 0; i < keys.length;i++) {
+            for (int j = i+1;j<keys.length;j++) {
+                GameObject o1 = this.objects.get(keys[i]);
+                GameObject o2 = this.objects.get(keys[j]);
                 colliderChain.collide(o1,o2);
             }
+
         }
     }
 }

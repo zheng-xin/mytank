@@ -1,15 +1,15 @@
 package com.zhengxin.tank;
 
+import com.zhengxin.tank.net.msg.TankMoveMsg;
+import com.zhengxin.tank.net.msg.TankMsg;
 import com.zhengxin.tank.obsever.FireEvent;
 import com.zhengxin.tank.obsever.IFireListener;
+import com.zhengxin.tank.obsever.SendMsgObsever;
 import com.zhengxin.tank.strategy.FireStrategy;
 
-import javax.swing.event.TreeWillExpandListener;
 import java.awt.*;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
 
 /**
  * @Auther: zhengxin
@@ -23,6 +23,7 @@ public class Tank extends GameObject{
     public static int HIGH = ResourceMgr.goodTankD.getHeight();
     public static int WITH = ResourceMgr.goodTankD.getWidth();
     private boolean isMoving = true;
+
     private static final String goodFireStrategyString = PropertyMgr.getInstance().getStringProp(PropetryKeys.GOODFS);
     private static final String badFireStrategyString = PropertyMgr.getInstance().getStringProp(PropetryKeys.BADFS);
     private Random random = new Random();
@@ -32,8 +33,8 @@ public class Tank extends GameObject{
     private List<IFireListener> fireListeners = new LinkedList<IFireListener>();
 
 
-    public Tank(int x, int y, Dir dir, GameModel gm, boolean isMoving, Group group) {
-        super.x = x;
+    public Tank(int x, int y, Dir dir, boolean isMoving, Group group,UUID uuid) {
+        this.x = x;
         this.y = y;
         this.dir = dir;
         this.isMoving = isMoving;
@@ -43,6 +44,36 @@ public class Tank extends GameObject{
         this.with = ResourceMgr.goodTankD.getWidth();
         this.high = ResourceMgr.goodTankD.getHeight();
         initFireStrategy(group);
+        this.id = uuid;
+    }
+    public Tank(TankMsg msg){
+        this.x = msg.getX();
+        this.y = msg.getY();
+        this.dir = msg.getDir();
+        this.isMoving = msg.isMoving();
+        this.group = msg.getGroup();
+        this.rect.width =  ResourceMgr.goodTankD.getWidth();
+        this.rect.height = ResourceMgr.goodTankD.getHeight();
+        this.with = ResourceMgr.goodTankD.getWidth();
+        this.high = ResourceMgr.goodTankD.getHeight();
+        initFireStrategy(group);
+        initFireListener();
+        this.id = msg.getUuid();
+    }
+    public void change(TankMoveMsg msg){
+        this.x = msg.getX();
+        this.y = msg.getY();
+        this.dir = msg.getDir();
+        this.isMoving = msg.isMoving();
+    }
+    public TankMoveMsg getMoveMsg(){
+        TankMoveMsg msg = new TankMoveMsg();
+        msg.setDir(this.dir);
+        msg.setMoving(this.isMoving);
+        msg.setX(this.x);
+        msg.setY(this.y);
+        msg.setUuid(this.id);
+        return msg;
     }
     private void initFireStrategy(Group g)  {
         String className = g == Group.GOOD ? goodFireStrategyString : badFireStrategyString;
@@ -56,9 +87,12 @@ public class Tank extends GameObject{
             e.printStackTrace();
         }
     }
+    private void initFireListener(){
+        this.fireListeners.add(new SendMsgObsever());
+    }
     public void paint(Graphics g) {
         if (!this.living) {
-            GameModel.GetInstance().getObjects().remove(this);
+            GameModel.GetInstance().getObjects().remove(this.id);
             return;
         }
         switch (dir) {
@@ -78,8 +112,8 @@ public class Tank extends GameObject{
                 g.drawImage(ResourceMgr.goodTankR, x, y, null);
                 break;
         }
-        if (this.group == Group.BAD && random.nextInt(100) > 95) fire();
-        if (this.group == Group.BAD && random.nextInt(100) > 95) this.dir = Dir.values()[random.nextInt(4)];
+//        if (this.group == Group.BAD && random.nextInt(100) > 95) fire();
+//        if (this.group == Group.BAD && random.nextInt(100) > 95) this.dir = Dir.values()[random.nextInt(4)];
         boundsCheck();
         moving();
     }
@@ -92,20 +126,12 @@ public class Tank extends GameObject{
     }
 
     public void fire() {
-
-        //fireStrategy.fire(this);
-        Iterator<IFireListener> it = this.fireListeners.iterator();
-        FireEvent event = new FireEvent(this);
-        while (it.hasNext()) {
-            IFireListener fireListener = it.next();
-            fireListener.Fire(event);
+        Bullet[] bullets = this.fireStrategy.fire(this);
+        for (int i=0;i<this.fireListeners.size();i++) {
+            for (Bullet bullet : bullets)
+            this.fireListeners.get(i).Fire(new FireEvent(bullet));
         }
-        //模拟观察者模式  实际没必要这么写
     }
-    public void fire2(){
-        this.fireStrategy.fire(this);
-    }
-
     public Group getGroup() {
         return this.group;
     }
@@ -147,7 +173,8 @@ public class Tank extends GameObject{
     public void explode() {
         int bx = this.x + this.with / 2 - Explode.WITH / 2;
         int by = this.y + this.high / 2 - Explode.HIGH / 2;
-        GameModel.GetInstance().getObjects().add(new Explode(bx, by));
+        UUID uuid = UUID.randomUUID();
+        GameModel.GetInstance().getObjects().put(uuid,new Explode(bx, by,uuid));
     }
     public void returnLastPosion(){
         this.x = prevX;
@@ -155,6 +182,9 @@ public class Tank extends GameObject{
     }
     public void addFireEvent(IFireListener listener){
         this.fireListeners.add(listener);
+    }
+    public boolean isMoving(){
+        return this.isMoving;
     }
 
 }

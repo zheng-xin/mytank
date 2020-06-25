@@ -10,11 +10,11 @@ import com.zhengxin.tank.Tank;
  * @version: 1.0
  */
 public class FireEvent {
-    private Tank source;
-    public FireEvent(Tank t) {
+    private Bullet source;
+    public FireEvent(Bullet t) {
         this.source =t;
     }
-    public Tank getSource(){
+    public Bullet getSource(){
         return this.source;
     }
 }

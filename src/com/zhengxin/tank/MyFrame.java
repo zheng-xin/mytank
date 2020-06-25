@@ -1,6 +1,8 @@
 package com.zhengxin.tank;
 
 
+import com.zhengxin.tank.net.client.Client;
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -51,6 +53,7 @@ public class MyFrame extends Frame {
     @Override
     public void paint(Graphics g) {
        GameModel.GetInstance().paint(g);
+        System.out.println(GameModel.GetInstance().getObjects().size());
     }
 
     class MyListener extends KeyAdapter {
@@ -74,12 +77,15 @@ public class MyFrame extends Frame {
                     break;
                 case KeyEvent.VK_DOWN:
                     bd = true;
+                    break;
                 default:
                     break;
             }
             setMainTankDir();
-            if (bl || br || bu || bd)
+            if (bl || br || bu || bd) {
                 GameModel.GetInstance().getMainTank().setIsMoving(true);
+                Client.INSTANCE.send(GameModel.GetInstance().getMainTank().getMoveMsg());
+            }
 //            repaint();
         }
 
@@ -106,8 +112,10 @@ public class MyFrame extends Frame {
                     break;
             }
             setMainTankDir();
-            if (!bl && !br && !bu && !bd)
+            if (!bl && !br && !bu && !bd) {
                 GameModel.GetInstance().getMainTank().setIsMoving(false);
+                Client.INSTANCE.send(GameModel.GetInstance().getMainTank().getMoveMsg());
+            }
         }
 
         private void setMainTankDir() {
